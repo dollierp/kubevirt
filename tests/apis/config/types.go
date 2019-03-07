@@ -30,4 +30,25 @@ import (
 // KubevirtTestsConfiguration contains the configuration for KubeVirt tests
 type KubeVirtTestsConfiguration struct {
 	metav1.TypeMeta `json:",inline"`
+
+	// storageClassLocal is the StorageClass to use to create local PVCs
+	// Default: ""
+	// +optional
+	StorageClassLocal string `json:"storageClassLocal,omitempty"`
+	// storageClassHostPath is the StorageClass to use to create host-path PVCs
+	// Default: "host-path"
+	// +optional
+	StorageClassHostPath string `json:"storageClassHostPath,omitempty"`
+	// storageClassBlockVolume is the StorageClass to use to create block-volume PVCs
+	// Default: "block-volume"
+	// +optional
+	StorageClassBlockVolume string `json:"storageClassBlockVolume,omitempty"`
+	// storageClassRhel is the StorageClass to use to create rhel PVCs
+	// Default: "rhel"
+	// +optional
+	StorageClassRhel string `json:"storageClassRhel,omitempty"`
+	// storageClassWindows is the StorageClass to use to create windows PVCs
+	// Default: "windows"
+	// +optional
+	StorageClassWindows string `json:"storageClassWindows,omitempty"`
 }
