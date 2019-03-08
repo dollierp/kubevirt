@@ -26,6 +26,7 @@ import (
 	"kubevirt.io/client-go/kubecli"
 )
 
+var KubeVirtTestConfigFile = ""
 var KubeVirtUtilityVersionTag = ""
 var KubeVirtVersionTag = "latest"
 var KubeVirtVersionTagAlt = ""
@@ -50,6 +51,7 @@ var PathToTestingInfrastrucureManifests = ""
 
 func init() {
 	kubecli.Init()
+	flag.StringVar(&KubeVirtTestConfigFile, "config", "", "Test suite will load its initial configuration from this file. The path may be absolute or relative; relative paths start at the current working directory. Omit this flag to use the built-in default configuration values. Command-line flags override configuration from this file.")
 	flag.StringVar(&KubeVirtUtilityVersionTag, "utility-container-tag", "", "Set the image tag or digest to use")
 	flag.StringVar(&KubeVirtVersionTag, "container-tag", "latest", "Set the image tag or digest to use")
 	flag.StringVar(&KubeVirtVersionTagAlt, "container-tag-alt", "", "An alternate tag that can be used to test operator deployments")
