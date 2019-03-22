@@ -522,9 +522,8 @@ var _ = Describe("VMIlifecycle", func() {
 			var nodes *k8sv1.NodeList
 			var err error
 			BeforeEach(func() {
-				nodes, err = virtClient.CoreV1().Nodes().List(metav1.ListOptions{})
-				Expect(err).ToNot(HaveOccurred(), "Should list nodes")
-				Expect(nodes.Items).NotTo(BeEmpty(), "There should be some node")
+				nodes = tests.GetAllSchedulableNodes(virtClient)
+				Expect(nodes.Items).ToNot(BeEmpty(), "There should be some compute node")
 
 				// Taint first node with "NoSchedule"
 				data := []byte(`{"spec":{"taints":[{"effect":"NoSchedule","key":"test","timeAdded":null,"value":"123"}]}}`)
@@ -571,9 +570,8 @@ var _ = Describe("VMIlifecycle", func() {
 			var err error
 
 			BeforeEach(func() {
-				nodes, err = virtClient.CoreV1().Nodes().List(metav1.ListOptions{})
-				Expect(err).ToNot(HaveOccurred(), "Should list nodes")
-				Expect(nodes.Items).NotTo(BeEmpty(), "There should be some node")
+				nodes = tests.GetAllSchedulableNodes(virtClient)
+				Expect(nodes.Items).ToNot(BeEmpty(), "There should be some compute node")
 			})
 
 			It("the vmi with node affinity and no conflicts should be scheduled", func() {
@@ -663,9 +661,8 @@ var _ = Describe("VMIlifecycle", func() {
 			It("the vmi with cpu.model matching a nfd label on a node should be scheduled", func() {
 
 				By("adding a node-feature-discovery CPU model label to a node")
-				nodes, err := virtClient.CoreV1().Nodes().List(metav1.ListOptions{})
-				Expect(err).ToNot(HaveOccurred(), "Should list nodes")
-				Expect(nodes.Items).ToNot(BeEmpty(), "There should be some nodes")
+				nodes := tests.GetAllSchedulableNodes(virtClient)
+				Expect(nodes.Items).ToNot(BeEmpty(), "There should be some compute node")
 
 				vmi := tests.NewRandomVMIWithEphemeralDiskAndUserdata(tests.ContainerDiskFor(tests.ContainerDiskCirros), "#!/bin/bash\necho 'hello'\n")
 				vmi.Spec.Domain.CPU = &v1.CPU{
