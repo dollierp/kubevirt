@@ -695,7 +695,7 @@ var _ = Describe("Networking", func() {
 			Expect(err).ToNot(HaveOccurred())
 			tests.WaitUntilVMIReady(vmi, tests.LoggedInAlpineExpecter)
 
-			output := tests.RunCommandOnVmiPod(vmi, []string{"python3", "-c", `import array
+			output := tests.RunCommandOnVmiPod(vmi, []string{"python", "-c", `import array
 import fcntl
 import socket
 import struct
@@ -707,7 +707,7 @@ ecmd = array.array('B', struct.pack('I39s', ETHTOOL_GTXCSUM, b'\x00'*39))
 ifreq = struct.pack('16sP', str.encode('k6t-eth0'), ecmd.buffer_info()[0])
 fcntl.ioctl(sockfd, SIOCETHTOOL, ifreq)
 res = ecmd.tostring()
-print(res[4])
+print(ord(res[4:5]))
 sock = None
 sockfd = None`})
 
