@@ -42,6 +42,9 @@ var _ = Describe("Migrations", func() {
 
 	BeforeEach(func() {
 		tests.BeforeTestCleanup()
+		if !tests.HasLiveMigration() {
+			Skip("LiveMigration feature gate is not enabled in kubevirt-config")
+		}
 
 		nodes, err := virtClient.CoreV1().Nodes().List(metav1.ListOptions{LabelSelector: v1.NodeSchedulable + "=" + "true"})
 		Expect(err).To(BeNil())
