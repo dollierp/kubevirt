@@ -52,6 +52,7 @@ fi
 
 #If run on jenkins, let us create isolated environments based on the job and
 # the executor number
+JOB_NAME=${JOB_NAME//\//-}  # Make sure docker volume name won't contain any slash
 provider_prefix=${JOB_NAME:-${KUBEVIRT_PROVIDER}}${EXECUTOR_NUMBER}
 job_prefix=${JOB_NAME:-kubevirt}${EXECUTOR_NUMBER}
 
