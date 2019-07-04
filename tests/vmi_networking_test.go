@@ -153,8 +153,8 @@ var _ = Describe("Networking", func() {
 				tests.SkipIfOpenShift("Custom MAC addresses on pod networks are not supported")
 			}
 
-			// assuming pod network is of standard MTU = 1500 (minus 50 bytes for vxlan overhead)
-			expectedMtu := 1450
+			// Default MTU in Cirros VMs is 1400.
+			expectedMtu := 1400
 			ipHeaderSize := 28 // IPv4 specific
 			payloadSize := expectedMtu - ipHeaderSize
 
