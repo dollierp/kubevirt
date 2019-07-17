@@ -153,11 +153,6 @@ var _ = Describe("Networking", func() {
 				tests.SkipIfOpenShift("Custom MAC addresses on pod networks are not supported")
 			}
 
-			// Default MTU in Cirros VMs is 1400.
-			expectedMtu := 1400
-			ipHeaderSize := 28 // IPv4 specific
-			payloadSize := expectedMtu - ipHeaderSize
-
 			switch destination {
 			case "Internet":
 				addr = "kubevirt.io"
@@ -169,6 +164,9 @@ var _ = Describe("Networking", func() {
 				addr = inboundVMIWithCustomMacAddress.Status.Interfaces[0].IP
 			}
 
+			payloadSize := 0
+			ipHeaderSize := 28 // IPv4 specific
+
 			By("checking k6t-eth0 MTU inside the pod")
 			vmiPod := tests.GetRunningPodByVirtualMachineInstance(outboundVMI, tests.NamespaceTestDefault)
 			output, err := tests.ExecuteCommandOnPod(
@@ -179,9 +177,25 @@ var _ = Describe("Networking", func() {
 			)
 			log.Log.Infof("%v", output)
 			Expect(err).ToNot(HaveOccurred())
-			// the following substring is part of 'ip address show' output
-			expectedMtuString := fmt.Sprintf("mtu %d", expectedMtu)
-			Expect(strings.Contains(output, expectedMtuString)).To(BeTrue())
+
+			// The MTU of the Pod network varies, depending on the environment in use. We want to
+			// verify that the actual MTU is from the possible range, which is {1500, 1450}, minus
+			//  50 bytes for vxlan overhead.
+			possibleMtus := []int{1400, 1450}
+			mtuMatch := false
+			expectedMtuString := ""
+
+			for _, expectedMtu := range possibleMtus {
+				payloadSize = expectedMtu - ipHeaderSize
+
+				// the following substring is part of 'ip address show' output
+				expectedMtuString = fmt.Sprintf("mtu %d", expectedMtu)
+				mtuMatch = strings.Contains(output, expectedMtuString)
+				if mtuMatch == true {
+					break
+				}
+			}
+			Expect(mtuMatch).To(BeTrue())
 
 			By("checking eth0 MTU inside the VirtualMachineInstance")
 			expecter, err := tests.LoggedInCirrosExpecter(outboundVMI)
