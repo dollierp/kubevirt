@@ -135,7 +135,7 @@ const (
 )
 
 const (
-	LocalStorageClass = "hdd"
+	LocalStorageClass = "kubevirt-hostpath-provisioner"
 
 	HostPathStorageClass = "host-path"
 
