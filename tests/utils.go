@@ -4918,3 +4918,13 @@ func IsLauncherCapabilityValid(capability k8sv1.Capability) bool {
 	}
 	return false
 }
+
+func PauseAfterFailure() {
+	if CurrentGinkgoTestDescription().Failed {
+		var input string
+		fmt.Fprintf(os.Stderr, "Test failed, press 'Enter' to run the next one...\n")
+		fmt.Scanln(&input)
+	}
+
+	return
+}

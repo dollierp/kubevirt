@@ -60,6 +60,9 @@ func TestTests(t *testing.T) {
 	if qe_reporters.Polarion.Run {
 		reporters = append(reporters, &qe_reporters.Polarion)
 	}
+
+	AfterEach(tests.PauseAfterFailure)
+
 	RunSpecsWithDefaultAndCustomReporters(t, "Tests Suite", reporters)
 }
 
