@@ -456,7 +456,7 @@ fi
 ginkgo_params="--no-color"
 
 # Test suites triggered by a Prow's Tide batch should stop after the first failure
-if [[ -n ${PROW_JOB_ID:-} && ${JOB_TYPE} == "batch" ]]; then
+if [[ -n ${PROW_JOB_ID:-} ]]; then
   ginkgo_params="$ginkgo_params --fail-fast"
 fi
 
